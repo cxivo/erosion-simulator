@@ -57,9 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\MeshGenerator.cs" />
-    <Compile Include="Assets\SimplePerlinNoise.cs" />
-    <Compile Include="Assets\ITerrain.cs" />
     <Compile Include="Assets\CompositePerlinNoise.cs" />
+    <Compile Include="Assets\ITerrain.cs" />
+    <Compile Include="Assets\SimplePerlinNoise.cs" />
+    <Compile Include="Assets\SimpleValueNoise.cs" />
+    <Compile Include="Assets\CompositeValueNoise.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

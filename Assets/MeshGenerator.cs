@@ -18,7 +18,9 @@ public class MeshGenerator : MonoBehaviour
 
         int sizeX = 200, sizeY = 200;
         //terrain = new SimplePerlinNoise(sizeX, sizeY, 14d);
-        terrain = new CompositePerlinNoise(sizeX, sizeY, 14d, 3);
+        //terrain = new CompositePerlinNoise(sizeX, sizeY, 42d, 4);
+        //terrain = new SimpleValueNoise(sizeX, sizeY, 42d);
+        terrain = new CompositeValueNoise(sizeX, sizeY, 42d, 4);
 
         // vertices
         vertices = new Vector3[sizeX * sizeY];
@@ -26,7 +28,7 @@ public class MeshGenerator : MonoBehaviour
         {
             for (int j = 0; j < sizeY; j++)
             {
-                vertices[i * sizeY + j] = new Vector3(i, 4f * (float)terrain.getHeightAt(i, j), j);
+                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)terrain.getHeightAt(i, j), j);
             }
         }
 

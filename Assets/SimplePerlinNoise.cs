@@ -57,7 +57,6 @@ public class SimplePerlinNoise : ITerrain
 
         // interpolate
         return interpolate(interpolate(lowlow, lowhigh, y - lowY), interpolate(highlow, highhigh, y - lowY), x - lowX);
-
     }
 
     private double dotProduct(Vector2 a, Vector2 b)
