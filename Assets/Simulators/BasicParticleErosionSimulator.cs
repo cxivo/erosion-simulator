@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 class Drop
 {
@@ -17,6 +16,7 @@ class Drop
 
 public class BasicParticleErosionSimulator : SimpleTerrainProvider
 {
+    // simulation constants
     private const double INERTIA = 0.1d;
     private const double MIN_SLOPE = 0.01d;
     private const double CAPACITY_MULTIPLIER = 1d;
@@ -25,10 +25,10 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
     private const double GRAVITY = 1d;
     private const int EROSION_RADIUS = 2;
     private const int DROP_ITERATIONS = 16;
+    private const double DROP_SIZE = 1d;
 
     public int SizeX { get; }
     public int SizeY { get; }
-    //private ISimpleTerrainProvider terrainProvider;
     private double[,] terrain;
     private System.Random random;
 
@@ -36,10 +36,10 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
     {
         this.SizeX = sizeX;
         this.SizeY = sizeY;
-        //this.terrainProvider = terrainProvider;
         this.terrain = new double[SizeX, SizeY];
         this.random = new System.Random();
 
+        // initialize terrain data
         for (int i = 0; i < SizeX; i++)
         {
             for (int j = 0; j < SizeY; j++)
@@ -52,8 +52,7 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
     // source: https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
     public void SimulateStep()
     {
-        double dropSize = 1d;
-        Drop drop = new Drop(new Vector2(random.NextDouble() * SizeX, random.NextDouble() * SizeY), dropSize);
+        Drop drop = new Drop(new Vector2(random.NextDouble() * SizeX, random.NextDouble() * SizeY), DROP_SIZE);
 
         for (int i = 0; i < DROP_ITERATIONS; i++)
         {
@@ -72,14 +71,13 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
                 double angle = 2 * Math.PI * random.NextDouble();
                 directionNew = new Vector2(Math.Cos(angle), Math.Sin(angle));
             }
-            //directionNew.normalize();
-
-            double m = directionNew.Magnitude();
-            directionNew.x /= m;
-            directionNew.y /= m;
+            directionNew.Normalize();
 
             // height difference
             double heightDifference = GetHeightAt(drop.position.x + directionNew.x, drop.position.y + directionNew.y) - GetHeightAt(drop.position.x, drop.position.y);
+
+            // update speed 
+            drop.velocity = Math.Sqrt(Math.Abs(drop.velocity * drop.velocity + heightDifference * GRAVITY));
 
             if (heightDifference >= 0)
             {
@@ -107,11 +105,7 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
             }
 
             // evaporate some water
-            drop.water -= dropSize / DROP_ITERATIONS;
-
-            // update speed 
-            drop.velocity = Math.Sqrt(Math.Abs(drop.velocity * drop.velocity + heightDifference * GRAVITY));
-
+            drop.water -= DROP_SIZE / DROP_ITERATIONS;
 
             // update drop's position
             drop.direction = directionNew;

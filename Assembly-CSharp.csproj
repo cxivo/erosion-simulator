@@ -63,6 +63,7 @@
     <Compile Include="Assets\Simulators\BasicParticleErosionSimulator.cs" />
     <Compile Include="Assets\SimpleTerrainProvider.cs" />
     <Compile Include="Assets\NoiseGenerators\SimplePerlinNoise.cs" />
+    <Compile Include="Assets\NoiseGenerators\FlatSurface.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

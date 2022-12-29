@@ -3,12 +3,14 @@ using System;
 public class CompositeNoise : SimpleTerrainProvider
 {
     public double Scale { get; }
+    public double Height { get; }
     private readonly int levels;
     private readonly SimpleTerrainProvider[] noises;
 
-    public CompositeNoise(double scale, params SimpleTerrainProvider[] noises)
+    public CompositeNoise(double scale, double height, params SimpleTerrainProvider[] noises)
     {
         this.Scale = scale;
+        this.Height = height;
         this.noises = noises;
         this.levels = noises.Length;
     }
@@ -19,7 +21,7 @@ public class CompositeNoise : SimpleTerrainProvider
         double power = 1d;
         for (int i = 0; i < levels; i++)
         {
-            value += noises[i].GetHeightAt(Scale * (x + 0.5*power) / power, Scale * (y + 0.5*power) / power) * power;
+            value += Height * noises[i].GetHeightAt(Scale * (x + 0.5*power) / power, Scale * (y + 0.5*power) / power) * power;
             power *= 0.5d;
         }
         return value;

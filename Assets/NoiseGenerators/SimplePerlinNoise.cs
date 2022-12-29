@@ -32,9 +32,9 @@ public class SimplePerlinNoise : SimpleTerrainProvider
         double highhigh = DotProduct(new Vector2(Math.Cos(angleHighHigh), Math.Sin(angleHighHigh)), new Vector2(x - highX, y - highY));
 
         // interpolate
-        return InterpolateSmooth(
-            InterpolateSmooth(lowlow, lowhigh, y - lowY), 
-            InterpolateSmooth(highlow, highhigh, y - lowY), x - lowX);
+        return InterpolateLinear(
+            InterpolateLinear(lowlow, lowhigh, y - lowY), 
+            InterpolateLinear(highlow, highhigh, y - lowY), x - lowX);
     }
 
     private double DotProduct(Vector2 a, Vector2 b)
