@@ -8,7 +8,9 @@ public class MeshGenerator : MonoBehaviour
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
-    ITerrain terrain;
+    SimpleTerrainProvider terrain;
+    BasicParticleErosionSimulator simulator;
+    int sizeX = 200, sizeY = 200;
 
     // Start is called before the first frame update
     void Start()
@@ -16,11 +18,16 @@ public class MeshGenerator : MonoBehaviour
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
-        int sizeX = 200, sizeY = 200;
+        Debug.Log("Started generating basic terrain...");
         //terrain = new SimplePerlinNoise(sizeX, sizeY, 14d);
-        //terrain = new CompositePerlinNoise(sizeX, sizeY, 42d, 4);
+        terrain = new CompositePerlinNoise(sizeX, sizeY, 42d, 3);
         //terrain = new SimpleValueNoise(sizeX, sizeY, 42d);
-        terrain = new CompositeValueNoise(sizeX, sizeY, 42d, 4);
+        //terrain = new CompositeValueNoise(sizeX, sizeY, 42d, 4);
+
+        simulator = new BasicParticleErosionSimulator(sizeX, sizeY, terrain);
+        //simulator.simulateStep();
+
+        Debug.Log("Terrain generation done.");
 
         // vertices
         vertices = new Vector3[sizeX * sizeY];
@@ -28,7 +35,7 @@ public class MeshGenerator : MonoBehaviour
         {
             for (int j = 0; j < sizeY; j++)
             {
-                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)terrain.getHeightAt(i, j), j);
+                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)simulator.getHeightAt(i, j), j);
             }
         }
 
@@ -48,15 +55,36 @@ public class MeshGenerator : MonoBehaviour
             }
         }
 
-         mesh.Clear();
+        mesh.Clear();
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+
+        Debug.Log("Adding mesh done.");
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        for (int i = 0; i < 265; i++)
+        {
+            simulator.simulateStep();
+        }
+
+        for (int i = 0; i < sizeX; i++)
+        {
+            for (int j = 0; j < sizeY; j++)
+            {
+                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)simulator.getHeightAt(i, j), j);
+            }
+        }
+
+        mesh.vertices = vertices;
+        mesh.RecalculateNormals();
     }
 }
