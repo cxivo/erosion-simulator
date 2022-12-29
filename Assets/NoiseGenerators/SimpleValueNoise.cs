@@ -2,43 +2,30 @@ using System;
 
 public class SimpleValueNoise : SimpleTerrainProvider
 {
-    public int SizeX { get; }
-    public int SizeY { get; }
-    public double Scale { get; }
+    private int seed;
 
-    private double[,] heights;
-
-    public SimpleValueNoise(int sizeX, int sizeY, double scale)
+    public SimpleValueNoise(int seed)
     {
-        this.SizeX = (int)Math.Ceiling(sizeX * scale);
-        this.SizeY = (int)Math.Ceiling(sizeY * scale);
-        this.Scale = scale;
-        Random random = new Random();
-
-        heights = new double[this.SizeX + 1, this.SizeY + 1];
-        for (int i = 0; i <= this.SizeX; i++)
-        {
-            for (int j = 0; j <= this.SizeY; j++)
-            {
-                heights[i, j] = random.NextDouble();
-            }
-        }
+        this.seed = seed;
     }
 
-    public override double getHeightAt(double x, double y)
+    public override double GetHeightAt(double x, double y)
     {
-        x /= Scale;
-        y /= Scale;
-
         int lowX = (int)Math.Floor(x);
         int highX = (int)Math.Ceiling(x);
         int lowY = (int)Math.Floor(y);
         int highY = (int)Math.Ceiling(y);
 
+        // the seed is added last, otherwise it would just act like an offset
+        double heightLowLow = KnuthHash(seed + KnuthHash(lowX + KnuthHash(lowY))) % 1d;
+        double heightHighLow = KnuthHash(seed + KnuthHash(highX + KnuthHash(lowY))) % 1d;
+        double heightLowHigh = KnuthHash(seed + KnuthHash(lowX + KnuthHash(highY))) % 1d;
+        double heightHighHigh = KnuthHash(seed + KnuthHash(highX + KnuthHash(highY))) %1d;
+
         // interpolate
-        return interpolateSmooth(
-            interpolateSmooth(heights[lowX, lowY], heights[lowX, highY], y - lowY), 
-            interpolateSmooth(heights[highX, lowY], heights[highX, highY], y - lowY),
+        return InterpolateSmooth(
+            InterpolateSmooth(heightLowLow, heightLowHigh, y - lowY), 
+            InterpolateSmooth(heightHighLow, heightHighHigh, y - lowY),
             x - lowX);
     }
 

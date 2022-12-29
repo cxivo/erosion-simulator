@@ -2,56 +2,42 @@ using System;
 
 public class SimplePerlinNoise : SimpleTerrainProvider
 {
-    public int SizeX { get; }
-    public int SizeY { get; }
-    private Vector2[,] vectors;
-    private Random random;
-    private double scale;
+    private int seed;
 
-    public SimplePerlinNoise(int sizeX, int sizeY, double scale)
+    public SimplePerlinNoise(int seed)
     {
-        this.SizeX = (int)Math.Ceiling(sizeX * scale);
-        this.SizeY = (int)Math.Ceiling(sizeY * scale);
-        this.vectors = new Vector2[this.SizeX + 1, this.SizeY + 1];
-        this.random = new Random();
-        this.scale = scale;
-
-        for (int i = 0; i <= this.SizeX; i++)
-        {
-            for (int j = 0; j <= this.SizeY; j++)
-            {
-                // random unit vector
-                double angle = 2 * Math.PI * random.NextDouble();
-                vectors[i, j] = new Vector2(Math.Cos(angle), Math.Sin(angle));
-            }
-        }
+        this.seed = seed;
     }
 
-    public override double getHeightAt(double x, double y)
+    public override double GetHeightAt(double x, double y)
     {
-        x /= scale;
-        y /= scale;
-
         int lowX = (int) Math.Floor(x);
         int highX = (int) Math.Ceiling(x);
         int lowY = (int) Math.Floor(y);
         int highY = (int) Math.Ceiling(y);
 
+        // the angle will always be an integer, but it's good enough
+        // the seed is added last, otherwise it would just act like an offset
+        double angleLowLow = KnuthHash(seed + KnuthHash(lowX + KnuthHash(lowY)));
+        double angleHighLow = KnuthHash(seed + KnuthHash(highX + KnuthHash(lowY)));
+        double angleLowHigh = KnuthHash(seed + KnuthHash(lowX + KnuthHash(highY)));
+        double angleHighHigh = KnuthHash(seed + KnuthHash(highX + KnuthHash(highY)));
+
         Vector2 thisVector = new Vector2(x, y);
 
         // get dot products
-        double lowlow = dotProduct(vectors[lowX, lowY], new Vector2(x - lowX, y - lowY));
-        double lowhigh = dotProduct(vectors[lowX, highY], new Vector2(x - lowX, y - highY));
-        double highlow = dotProduct(vectors[highX, lowY], new Vector2(x - highX, y - lowY));
-        double highhigh = dotProduct(vectors[highX, highY], new Vector2(x - highX, y - highY));
+        double lowlow = DotProduct(new Vector2(Math.Cos(angleLowLow), Math.Sin(angleLowLow)), new Vector2(x - lowX, y - lowY));
+        double lowhigh = DotProduct(new Vector2(Math.Cos(angleLowHigh), Math.Sin(angleLowHigh)), new Vector2(x - lowX, y - highY));
+        double highlow = DotProduct(new Vector2(Math.Cos(angleHighLow), Math.Sin(angleHighLow)), new Vector2(x - highX, y - lowY));
+        double highhigh = DotProduct(new Vector2(Math.Cos(angleHighHigh), Math.Sin(angleHighHigh)), new Vector2(x - highX, y - highY));
 
         // interpolate
-        return interpolateSmooth(
-            interpolateSmooth(lowlow, lowhigh, y - lowY), 
-            interpolateSmooth(highlow, highhigh, y - lowY), x - lowX);
+        return InterpolateSmooth(
+            InterpolateSmooth(lowlow, lowhigh, y - lowY), 
+            InterpolateSmooth(highlow, highhigh, y - lowY), x - lowX);
     }
 
-    private double dotProduct(Vector2 a, Vector2 b)
+    private double DotProduct(Vector2 a, Vector2 b)
     {
         return (a.x * b.x) + (a.y * b.y);
     }

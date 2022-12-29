@@ -17,15 +17,14 @@ public class MeshGenerator : MonoBehaviour
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
-
         Debug.Log("Started generating basic terrain...");
-        //terrain = new SimplePerlinNoise(sizeX, sizeY, 14d);
-        terrain = new CompositePerlinNoise(sizeX, sizeY, 42d, 3);
+
+        System.Random random = new System.Random();
+        //terrain = new SimplePerlinNoise(random.Next());
+        terrain = new CompositeNoise(0.025d, new SimplePerlinNoise(random.Next()), new SimplePerlinNoise(random.Next()), new SimplePerlinNoise(random.Next()));
         //terrain = new SimpleValueNoise(sizeX, sizeY, 42d);
-        //terrain = new CompositeValueNoise(sizeX, sizeY, 42d, 4);
 
         simulator = new BasicParticleErosionSimulator(sizeX, sizeY, terrain);
-        //simulator.simulateStep();
 
         Debug.Log("Terrain generation done.");
 
@@ -35,7 +34,7 @@ public class MeshGenerator : MonoBehaviour
         {
             for (int j = 0; j < sizeY; j++)
             {
-                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)simulator.getHeightAt(i, j), j);
+                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)simulator.GetHeightAt(i, j), j);
             }
         }
 
@@ -73,14 +72,14 @@ public class MeshGenerator : MonoBehaviour
     {
         for (int i = 0; i < 265; i++)
         {
-            simulator.simulateStep();
+            simulator.SimulateStep();
         }
 
         for (int i = 0; i < sizeX; i++)
         {
             for (int j = 0; j < sizeY; j++)
             {
-                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)simulator.getHeightAt(i, j), j);
+                vertices[i * sizeY + j] = new Vector3(i, 20f * (float)simulator.GetHeightAt(i, j), j);
             }
         }
 

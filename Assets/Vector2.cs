@@ -9,24 +9,24 @@ public struct Vector2
         this.y = y;
     }
 
-    public bool isZero()
+    public bool IsZero()
     {
         return x == 0 && y == 0;
     }
 
-    public double magnitude()
+    public double Magnitude()
     {
         return Math.Sqrt(x * x + y * y);
     }
 
-    public double squareMagnitude()
+    public double SquareMagnitude()
     {
         return x * x + y * y;
     }
 
-    public void normalize()
+    public void Normalize()
     {
-        double m = magnitude();
+        double m = Magnitude();
         x /= m;
         y /= m;
     }

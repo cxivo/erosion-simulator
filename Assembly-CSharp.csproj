@@ -59,8 +59,7 @@
     <Compile Include="Assets\Vector2.cs" />
     <Compile Include="Assets\NoiseGenerators\SimpleValueNoise.cs" />
     <Compile Include="Assets\MeshGenerator.cs" />
-    <Compile Include="Assets\NoiseGenerators\CompositePerlinNoise.cs" />
-    <Compile Include="Assets\NoiseGenerators\CompositeValueNoise.cs" />
+    <Compile Include="Assets\NoiseGenerators\CompositeNoise.cs" />
     <Compile Include="Assets\Simulators\BasicParticleErosionSimulator.cs" />
     <Compile Include="Assets\SimpleTerrainProvider.cs" />
     <Compile Include="Assets\NoiseGenerators\SimplePerlinNoise.cs" />

@@ -44,13 +44,13 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
         {
             for (int j = 0; j < SizeY; j++)
             {
-                this.terrain[i, j] = terrainProvider.getHeightAt(i, j);
+                this.terrain[i, j] = terrainProvider.GetHeightAt(i, j);
             }
         }
     }
 
     // source: https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
-    public void simulateStep()
+    public void SimulateStep()
     {
         double dropSize = 1d;
         Drop drop = new Drop(new Vector2(random.NextDouble() * SizeX, random.NextDouble() * SizeY), dropSize);
@@ -64,9 +64,9 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
             }
         
             // find the new direction
-            Vector2 directionNew = drop.direction * INERTIA - getGradient(drop.position) * (1 - INERTIA);
+            Vector2 directionNew = drop.direction * INERTIA - GetGradient(drop.position) * (1 - INERTIA);
            
-            if (directionNew.isZero())
+            if (directionNew.IsZero())
             {
                 // pick a random direction
                 double angle = 2 * Math.PI * random.NextDouble();
@@ -74,40 +74,35 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
             }
             //directionNew.normalize();
 
-            double m = directionNew.magnitude();
+            double m = directionNew.Magnitude();
             directionNew.x /= m;
             directionNew.y /= m;
 
             // height difference
-            double heightDifference = getHeightAt(drop.position.x + directionNew.x, drop.position.y + directionNew.y) - getHeightAt(drop.position.x, drop.position.y);
+            double heightDifference = GetHeightAt(drop.position.x + directionNew.x, drop.position.y + directionNew.y) - GetHeightAt(drop.position.x, drop.position.y);
 
             if (heightDifference >= 0)
             {
                 // drop went up -> fill up the hole behind it & deposit sediment
                 double toDeposit = Math.Min(heightDifference, drop.sediment);
-                if (toDeposit < 0) Debug.Log("Zaporny po A");
-                depositSediment(drop.position, toDeposit);
+                DepositSediment(drop.position, toDeposit);
                 drop.sediment -= toDeposit;
             } else
             {
                 // drop went downhill -> erode
                 double capacity = Math.Max(-heightDifference, MIN_SLOPE) * drop.velocity * drop.water * CAPACITY_MULTIPLIER;
-                if (capacity < 0) Debug.Log("kapacita");
 
                 // if drop has more sediment than the calculated capacity, it deposits a percentage of the surplus
                 if (drop.sediment > capacity)
                 {
                     double toDeposit = (drop.sediment - capacity) * DEPOSIT_FRACTION;
-                    if (toDeposit < 0) Debug.Log("Zaporny po B");
-                    depositSediment(drop.position, toDeposit);
+                    DepositSediment(drop.position, toDeposit);
                     drop.sediment -= toDeposit;
                 }
 
                 // erode amount equal to a percentage of drop's capacity, but no more than the height difference
                 double toErode = Math.Min(Math.Max(capacity - drop.sediment, 0) * EROSION_FRACTION, -heightDifference);
-                if (toErode < 0) Debug.Log("Zaporny po C");
-
-                erodeSediment(drop.position, toErode);
+                ErodeSediment(drop.position, toErode);
                 drop.sediment += toErode;              
             }
 
@@ -124,7 +119,7 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
         }
     }
 
-    private Vector2 getGradient(Vector2 position)
+    private Vector2 GetGradient(Vector2 position)
     {
         int lowX = (int)Math.Floor(position.x);
         int highX = (int)Math.Ceiling(position.x);
@@ -133,11 +128,11 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
         double xModulo = position.x - lowX;
         double yModulo = position.y - lowY;
 
-        return new Vector2(interpolateLinear(terrain[highX, lowY] - terrain[lowX, lowY], terrain[highX, highY] - terrain[lowX, highY], yModulo),
-            interpolateLinear(terrain[lowX, highY] - terrain[lowX, lowY], terrain[highX, highY] - terrain[highX, lowY], xModulo));
+        return new Vector2(InterpolateLinear(terrain[highX, lowY] - terrain[lowX, lowY], terrain[highX, highY] - terrain[lowX, highY], yModulo),
+            InterpolateLinear(terrain[lowX, highY] - terrain[lowX, lowY], terrain[highX, highY] - terrain[highX, lowY], xModulo));
     }
 
-    private void depositSediment(Vector2 position, double sediment)
+    private void DepositSediment(Vector2 position, double sediment)
     {
         int lowX = (int)Math.Floor(position.x);
         int highX = (int)Math.Ceiling(position.x);
@@ -153,7 +148,7 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
         terrain[highX, highY] += sediment * xModulo * yModulo;
     }
 
-    private void erodeSediment(Vector2 position, double sediment)
+    private void ErodeSediment(Vector2 position, double sediment)
     {
         double[,] weights = new double[2 * EROSION_RADIUS + 1, 2 * EROSION_RADIUS + 1];
         double sum = 0d;
@@ -186,7 +181,7 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
         }
     }
 
-    public override double getHeightAt(double x, double y)
+    public override double GetHeightAt(double x, double y)
     {
         int lowX = (int)Math.Floor(x);
         int highX = (int)Math.Ceiling(x);
@@ -194,9 +189,9 @@ public class BasicParticleErosionSimulator : SimpleTerrainProvider
         int highY = (int)Math.Ceiling(y);
 
         // interpolate
-        return interpolateLinear(
-            interpolateLinear(terrain[lowX, lowY], terrain[lowX, highY], y - lowY),
-            interpolateLinear(terrain[highX, lowY], terrain[highX, highY], y - lowY),
+        return InterpolateLinear(
+            InterpolateLinear(terrain[lowX, lowY], terrain[lowX, highY], y - lowY),
+            InterpolateLinear(terrain[highX, lowY], terrain[highX, highY], y - lowY),
             x - lowX);
     }
 }
