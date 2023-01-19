@@ -361,3 +361,14 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# hello, I added these files. if anything breaks, it's my fault
+/Builds
+/Temp
+/Library/Il2cppBuildCache/WebGL/il2cppOutput
+/Library/il2cpp_cache
+/Library/PackageCache
+/Library/PlayerDataCache
+/Library/ShaderCache/0
+/Library/Il2cppBuildCache/WebGL/Native
+/ShaderCache

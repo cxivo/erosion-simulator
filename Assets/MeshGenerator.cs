@@ -1,17 +1,23 @@
+using ErosionSimulator;
+using ErosionSimulator.Simulators;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(MeshFilter))]
 public class MeshGenerator : MonoBehaviour
 {
+    public Text text;
     Mesh mesh;
     Vector3[] vertices;
     int[] triangles;
-    SimpleTerrainProvider terrain;
-    BasicParticleErosionSimulator simulator;
+    TerrainProvider terrain;
+    Simulator simulator;
     int sizeX = 256, sizeY = 256;  // literally the limit, 65k verts per object is the limit in Unity
     float heightMultiplier = 20f;
+    long stepsSimulated = 0L;
+    const int STEPS_PER_FRAME = 1000;
 
     // Start is called before the first frame update
     void Start()
@@ -20,17 +26,7 @@ public class MeshGenerator : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
         Debug.Log("Started generating basic terrain...");
 
-        System.Random random = new System.Random();
-        //terrain = new SimplePerlinNoise(random.Next());
-        terrain = new CompositeNoise(0.025d, 1d, 
-            new SimplePerlinNoise(random.Next()), 
-            new SimplePerlinNoise(random.Next()),
-            new SimplePerlinNoise(random.Next()),
-            new SimplePerlinNoise(random.Next()),
-            new SimplePerlinNoise(random.Next()));
-        //terrain = new SimpleValueNoise(sizeX, sizeY, 42d);
-
-        simulator = new BasicParticleErosionSimulator(sizeX, sizeY, terrain);
+        newTerrain();
 
         Debug.Log("Primary terrain generation done.");
 
@@ -66,6 +62,22 @@ public class MeshGenerator : MonoBehaviour
         Debug.Log("Adding mesh done.");
     }
 
+    public void newTerrain()
+    {
+        stepsSimulated = 0L;
+
+        System.Random random = new System.Random();
+        terrain = new CompositeNoise(0.01d, 2d,
+            new PerlinNoise(random.Next()),
+            new PerlinNoise(random.Next()),
+            new PerlinNoise(random.Next()),
+            new PerlinNoise(random.Next()),
+            new PerlinNoise(random.Next()),
+            new PerlinNoise(random.Next()));
+
+        simulator = new BasicParticleErosionSimulator(sizeX, sizeY, terrain);
+    }
+
     private void UpdateVertices()
     {
         for (int i = 0; i < sizeX; i++)
@@ -81,10 +93,10 @@ public class MeshGenerator : MonoBehaviour
     void Update()
     {
         // simulate some steps every frame
-        for (int i = 0; i < 256; i++)
-        {
-            simulator.SimulateStep();
-        }
+        simulator.Step(STEPS_PER_FRAME);
+        stepsSimulated += STEPS_PER_FRAME;
+
+        text.text = "Use A & D to rotate, SPACE for next terrain. Steps simulated: " + stepsSimulated;
 
         // update the mesh
         UpdateVertices();
