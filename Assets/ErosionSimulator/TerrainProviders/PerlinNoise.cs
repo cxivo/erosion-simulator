@@ -25,13 +25,13 @@ namespace ErosionSimulator
             double angleHighLow = KnuthHash(seed + KnuthHash(highX + KnuthHash(lowY)));
             double angleHighHigh = KnuthHash(seed + KnuthHash(highX + KnuthHash(highY)));
 
-            Vector2 thisVector = new Vector2(x, y);
+            Vector2D thisVector = new Vector2D(x, y);
 
             // get dot products
-            double lowlow = DotProduct(new Vector2(Math.Cos(angleLowLow), Math.Sin(angleLowLow)), new Vector2(lowX - x, lowY - y));
-            double lowhigh = DotProduct(new Vector2(Math.Cos(angleLowHigh), Math.Sin(angleLowHigh)), new Vector2(lowX - x, highY - y));
-            double highlow = DotProduct(new Vector2(Math.Cos(angleHighLow), Math.Sin(angleHighLow)), new Vector2(highX - x, lowY - y));
-            double highhigh = DotProduct(new Vector2(Math.Cos(angleHighHigh), Math.Sin(angleHighHigh)), new Vector2(highX - x, highY - y));
+            double lowlow = DotProduct(new Vector2D(Math.Cos(angleLowLow), Math.Sin(angleLowLow)), new Vector2D(lowX - x, lowY - y));
+            double lowhigh = DotProduct(new Vector2D(Math.Cos(angleLowHigh), Math.Sin(angleLowHigh)), new Vector2D(lowX - x, highY - y));
+            double highlow = DotProduct(new Vector2D(Math.Cos(angleHighLow), Math.Sin(angleHighLow)), new Vector2D(highX - x, lowY - y));
+            double highhigh = DotProduct(new Vector2D(Math.Cos(angleHighHigh), Math.Sin(angleHighHigh)), new Vector2D(highX - x, highY - y));
 
             // interpolate
             return InterpolateSmooth(
@@ -39,7 +39,7 @@ namespace ErosionSimulator
                 InterpolateSmooth(highlow, highhigh, y - lowY), x - lowX);
         }
 
-        private double DotProduct(Vector2 a, Vector2 b)
+        private double DotProduct(Vector2D a, Vector2D b)
         {
             return (a.x * b.x) + (a.y * b.y);
         }

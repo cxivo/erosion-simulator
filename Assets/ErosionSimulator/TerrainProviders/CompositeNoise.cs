@@ -16,6 +16,7 @@ namespace ErosionSimulator
             this.levels = noises.Length;
         }
 
+        // height is the sum of the noises with increasing frequency and decreasing amplitude
         public override double GetHeightAt(double x, double y)
         {
             double value = 0d;

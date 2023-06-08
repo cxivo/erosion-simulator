@@ -56,21 +56,30 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\ErosionSimulator\Vector3D.cs" />
     <Compile Include="Assets\CameraRotate.cs" />
-    <Compile Include="Assets\ErosionSimulator\Vector2.cs" />
     <Compile Include="Assets\ErosionSimulator\TerrainProviders\ArrayTerrain.cs" />
     <Compile Include="Assets\ErosionSimulator\Geology\SoilHorizon.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\Deprecated\PipeModelSimulator.cs" />
     <Compile Include="Assets\ErosionSimulator\TerrainProviders\ValueNoise.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\Deprecated\FourthPipeModelSimulator.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\Deprecated\WaterMovement.cs" />
     <Compile Include="Assets\ErosionSimulator\TerrainProviders\TerrainProvider.cs" />
     <Compile Include="Assets\ErosionSimulator\Geology\Material.cs" />
     <Compile Include="Assets\MeshGenerator.cs" />
+    <Compile Include="Assets\ErosionSimulator\Vector2D.cs" />
+    <Compile Include="Assets\ErosionSimulator\TerrainProviders\TerrainTranslator.cs" />
+    <Compile Include="Assets\TextureHeightProvider.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\Deprecated\SecondPipeModelSimulator.cs" />
     <Compile Include="Assets\ErosionSimulator\TerrainProviders\CompositeNoise.cs" />
     <Compile Include="Assets\ErosionSimulator\TerrainProviders\FlatSurface.cs" />
-    <Compile Include="Assets\ErosionSimulator\Simulators\BasicParticleErosionSimulator.cs" />
-    <Compile Include="Assets\ErosionSimulator\Simulators\GridErosionSimulator.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\ParticleErosionSimulator.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\GridBasedSimulator.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\Deprecated\GridErosionSimulator.cs" />
     <Compile Include="Assets\ErosionSimulator\TerrainProviders\PerlinNoise.cs" />
     <Compile Include="Assets\ErosionSimulator\Simulators\Simulator.cs" />
     <Compile Include="Assets\ErosionSimulator\Geology\WaterColumn.cs" />
+    <Compile Include="Assets\ErosionSimulator\Simulators\Deprecated\ThirdPipeModelSimulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

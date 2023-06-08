@@ -1,5 +1,6 @@
 ﻿namespace ErosionSimulator.Geology
 {
+    // not used in the end
     public class Material
     {
         // warning - the constants are made up

@@ -2,6 +2,7 @@ using System;
 
 namespace ErosionSimulator
 {
+    // a very simple noise, generates a random number at each integer coordinate and interpolates for the non-integer coordinates
     public class ValueNoise : TerrainProvider
     {
         private int seed;
