@@ -6,4 +6,4 @@ If you want to try and build and run it yourself, you can do it with
 
 a) Unity - this project was made for Unity 2020.3. Download all files except the folder _ConsoleVersion_ and add it to your Unity project
 
-b) console version - download only the _ErosionSimulator_ and _ConsoleVersion_ folder - these contain the library + a console user interface.
+b) console version - download only the _Assets/ErosionSimulator_ and _ConsoleVersion_ folder - these contain the library + a console user interface.
